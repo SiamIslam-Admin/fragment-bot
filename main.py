@@ -1,6 +1,15 @@
 import asyncio
+import logging
+import json
 from FragmentAPI import AsyncFragmentAPI
 from FragmentAPI.exceptions import UserNotFoundError
+
+# 1. Setup logging to stdout for Railway
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s: %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 async def main():
     api = AsyncFragmentAPI(
@@ -11,24 +20,37 @@ async def main():
     )
 
     try:
-        target = "primehimel"  # put real Telegram username here, without @
+        target = "primehimel"
+        
+        # Log the start of the process
+        logger.info(f"Starting request for target: {target}")
 
+        # Get recipient info
         user = await api.get_recipient_stars(target)
-        print(f"Name: {user.name}")
+        # Log the full user object/response
+        logger.info(f"Recipient Found - Name: {user.name}, Full Info: {user.__dict__}")
 
-        result = await api.buy_stars(target, 100)
+        # Buy stars
+        amount = 100
+        result = await api.buy_stars(target, amount)
+        
+        # Log the full purchase result
         if result.success:
-            print(f"TX: {result.transaction_hash}")
+            logger.info(f"SUCCESS: Bought {amount} stars for {target}. TX: {result.transaction_hash}")
+            logger.info(f"Full Response Data: {result.__dict__}")
         else:
-            print("Buy stars failed")
+            logger.error(f"FAILURE: Buy stars failed for {target}. Response: {result.__dict__}")
 
     except UserNotFoundError as e:
-        print(f"Invalid username: {e}")
+        logger.error(f"User Not Found Error: {e}")
 
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        # This will log the full traceback for unexpected errors
+        logger.exception(f"Unexpected error occurred during execution: {e}")
 
     finally:
         await api.close()
+        logger.info("API connection closed.")
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

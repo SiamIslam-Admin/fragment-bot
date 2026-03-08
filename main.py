@@ -31,7 +31,7 @@ async def main():
         logger.info(f"Recipient Found - Name: {user.name}, Full Info: {user.__dict__}")
 
         # Buy stars
-        amount = 100
+        amount = 50
         result = await api.buy_stars(target, amount)
         
         # Log the full purchase result

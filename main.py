@@ -19,7 +19,7 @@ async def main():
         hash_value="c3d0ea624e192dd63c",
         wallet_mnemonic="differ color hold primary ensure illegal clap orange borrow lock essence verify pipe exchange auto venue flock jaguar black submit garbage injury city jealous",
         wallet_api_key="462217391156217a1be5819e36e69d389016b87c97242cd481ebe73e39731434",
-        wallet_version="W5"  # Use "V4R2" if Tonkeeper says V4R2
+        wallet_version="V4R2"  # Use "V4R2" if Tonkeeper says V4R2
     )
 
     try:

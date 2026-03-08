@@ -1,5 +1,6 @@
 import asyncio
 from FragmentAPI import AsyncFragmentAPI
+from FragmentAPI.exceptions import UserNotFoundError
 
 async def main():
     api = AsyncFragmentAPI(
@@ -9,25 +10,25 @@ async def main():
         wallet_api_key="462217391156217a1be5819e36e69d389016b87c97242cd481ebe73e39731434"
     )
 
-    # Get recipient info
-    user = await api.get_recipient_stars('primehimel')
-    print(f"Name: {user.name}")
+    try:
+        target = "primehimel"  # put real Telegram username here, without @
 
-    # Send Stars anonymously
-    result = await api.buy_stars('primehimel', 100)
-    if result.success:
-        print(f"✓ TX: {result.transaction_hash}")
+        user = await api.get_recipient_stars(target)
+        print(f"Name: {user.name}")
 
-    # Send Stars with sender name
-    result = await api.buy_stars('primehimel', 100, show_sender=True)
-    if result.success:
-        print(f"✓ TX2: {result.transaction_hash}")
+        result = await api.buy_stars(target, 100)
+        if result.success:
+            print(f"TX: {result.transaction_hash}")
+        else:
+            print("Buy stars failed")
 
-    # TON transfer
-    transfer = await api.transfer_ton("recipient.t.me", 0.5, "Payment")
-    if transfer.success:
-        print(f"✓ Transfer: {transfer.transaction_hash}")
+    except UserNotFoundError as e:
+        print(f"Invalid username: {e}")
 
-    await api.close()
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
+    finally:
+        await api.close()
 
 asyncio.run(main())

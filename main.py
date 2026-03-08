@@ -10,11 +10,11 @@ async def main():
     )
 
     # Get recipient info
-    user = await api.get_recipient_stars('username')
+    user = await api.get_recipient_stars('primehimel')
     print(f"Name: {user.name}")
 
     # Send Stars anonymously
-    result = await api.buy_stars('username', 100)
+    result = await api.buy_stars('primehimel', 100)
     if result.success:
         print(f"✓ TX: {result.transaction_hash}")
 
